@@ -1,0 +1,11 @@
+name: Pro Menus
+description: Menu system enhancement
+
+author: Palaniappan Chellappan
+authorEmail: palaniappanc@gmail.com
+authorUrl: http://twitter.com/palam
+
+dependencies:
+  plugins:
+    - acl
+    - extensions

@@ -131,7 +131,7 @@ class ProMenusHelper extends AppHelper {
                     }
                 }
             }
-			$linkAttr = array('class' => implode(' ', $linkClasses));
+			$linkAttr['class'] = implode(' ', $linkClasses);
             $liAttr = array('class' => implode(' ', $liClasses));
 
 			if (strstr($link['Link']['link'], 'controller:')) {

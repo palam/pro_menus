@@ -95,6 +95,7 @@ class ProMenusHelper extends AppHelper {
         $options = array_merge($_options, $options);
 
         $output = '';
+        $orig_sub_levels = $options['sub_levels'];
         foreach ($links AS $linkKey => $link) {
             $linkAttr = array(
                 'id' => 'link-' . $link['Link']['id'],
@@ -145,6 +146,7 @@ class ProMenusHelper extends AppHelper {
                 if ($options['sub_levels'] > 0 or $options['sub_levels'] == null){
                     $linkOutput .= $this->nestedLinks($link['children'], $options, $depth + 1);
                 }
+                $options['sub_levels'] = $orig_sub_levels;
             }
             $linkOutput = $this->Html->tag('li', $linkOutput, $liAttr);
             $output .= $linkOutput;

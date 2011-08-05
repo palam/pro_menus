@@ -6,6 +6,7 @@ class ProMenusHelper extends AppHelper {
     );
     
     public $selected_links = array();
+    public $breadcrumb = array();
     
     public function __construct($options = array()) {
       $this->View =& ClassRegistry::getObject('view');
@@ -156,6 +157,55 @@ class ProMenusHelper extends AppHelper {
         }
 
         return $output;
+    }
+    public function breadcrumb($menuAlias, $options = array()) {
+        $_options = array(
+            'separator' => ' &rarr; ',
+            'tag' => 'div',
+            'tagAttributes' => array('class' => 'breadcrumb')
+        );
+        $options = array_merge($_options, $options);
+        
+        if (!isset($this->View->viewVars['pro_menus_for_layout'][$menuAlias])) {
+            return false;
+        }
+        $menu = $this->View->viewVars['pro_menus_for_layout'][$menuAlias];
+        $this->selected_links = array();
+        $this->setSelectedLinks($menu['threaded']);
+        
+        if (empty($this->selected_links)){
+            return false;
+        }
+        
+        $this->setNestedCrumbs($menu['threaded'], $options);
+        
+        $output = array();
+        foreach ($this->breadcrumb as $crumb) {
+            $output[] = $this->Html->link($crumb['Link']['title'], $crumb['Link']['link']);
+        }
+        $output = $this->Html->tag($options['tag'], implode($options['separator'], $output), $options['tagAttributes']);
+        
+        return $output;
+    }
+    public function setNestedCrumbs($links, $options = array()) {
+        $_options = array();
+        $options = array_merge($_options, $options);
+        
+        $linkForLayout = $this->selected_links[0];
+
+        foreach ($links AS $linkKey => $link) {
+            if($link['Link']['lft'] < $linkForLayout['Link']['lft'] && $link['Link']['rght'] > $linkForLayout['Link']['rght'] && $link['Link']['menu_id'] == $linkForLayout['Link']['menu_id']){
+                $this->breadcrumb[] = $link;
+                if (isset($link['children']) && count($link['children']) > 0) {
+                    $this->setNestedCrumbs($link['children'], $options);
+                }
+            }
+            else{
+                if($link['Link']['lft'] == $linkForLayout['Link']['lft'] && $link['Link']['rght'] == $linkForLayout['Link']['rght'] && $link['Link']['menu_id'] == $linkForLayout['Link']['menu_id']){
+                    $this->breadcrumb[] = $link;
+                }
+            }
+        }
     }
 }
 ?>

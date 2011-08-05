@@ -181,6 +181,9 @@ class ProMenusHelper extends AppHelper {
         
         $output = array();
         foreach ($this->breadcrumb as $crumb) {
+            if (strstr($crumb['Link']['link'], 'controller:')) {
+                $crumb['Link']['link'] = $this->Layout->linkStringToArray($crumb['Link']['link']);
+            }
             $output[] = $this->Html->link($crumb['Link']['title'], $crumb['Link']['link']);
         }
         $output = $this->Html->tag($options['tag'], implode($options['separator'], $output), $options['tagAttributes']);
